@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 
-import {ExamUseCase} from "../../domain/usecases/exam.usecase";
+import {ExamUseCase} from "../../../domain/usecases/exam.usecase";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {ExamModel} from "../../domain/models/exam.model";
+import {ExamModel} from "../../../domain/models/exam.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-exam',
@@ -13,16 +14,15 @@ export class ExamComponent implements OnInit{
 
   examForm: FormGroup = new FormGroup({});
 
-  dataSource: ExamModel[] = [];
 
   constructor(
     private examUseCase: ExamUseCase,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public router: Router
   ) {}
 
   ngOnInit(): void {
     this.setUpForm();
-    this.getExams();
   }
 
 
@@ -39,19 +39,8 @@ export class ExamComponent implements OnInit{
       next: (response) => {
         console.log(response);
         setTimeout(() =>{
-          window.location.reload()
+          this.router.navigate(['/view-exam']);
         }, 1000)
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    })
-  }
-
-  getExams() {
-    this.examUseCase.getExams().subscribe({
-      next: (response) => {
-        this.dataSource = response;
       },
       error: (error) => {
         console.log(error);
