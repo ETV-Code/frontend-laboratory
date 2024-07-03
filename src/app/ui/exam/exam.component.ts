@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 
 import {ExamUseCase} from "../../domain/usecases/exam.usecase";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {ExamModel} from "../../domain/models/exam.model";
 
 @Component({
   selector: 'app-exam',
@@ -12,6 +13,8 @@ export class ExamComponent implements OnInit{
 
   examForm: FormGroup = new FormGroup({});
 
+  dataSource: ExamModel[] = [];
+
   constructor(
     private examUseCase: ExamUseCase,
     public formBuilder: FormBuilder
@@ -19,6 +22,7 @@ export class ExamComponent implements OnInit{
 
   ngOnInit(): void {
     this.setUpForm();
+    this.getExams();
   }
 
 
@@ -34,6 +38,20 @@ export class ExamComponent implements OnInit{
     this.examUseCase.saveExam(this.examForm.value).subscribe({
       next: (response) => {
         console.log(response);
+        setTimeout(() =>{
+          window.location.reload()
+        }, 1000)
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
+  }
+
+  getExams() {
+    this.examUseCase.getExams().subscribe({
+      next: (response) => {
+        this.dataSource = response;
       },
       error: (error) => {
         console.log(error);
